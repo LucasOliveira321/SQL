@@ -10,6 +10,7 @@
 - WHERE<br/>
 - AND, IS, OR<br/>
 - LIKE<br/>
+- BETWEEN<br/>
 - ORDER BY<br/>
 - DESC, ASC
 - GROUP BY<br/>
