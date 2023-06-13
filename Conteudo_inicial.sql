@@ -1,25 +1,9 @@
--- Database: alura
-
--- DROP DATABASE IF EXISTS alura;
-
--- CRIANDO A BASE DE DADOS
-
-CREATE DATABASE alura
-    WITH
-    OWNER = postgres
-    ENCODING = 'UTF8'
-    LC_COLLATE = 'Portuguese_Brazil.1252'
-    LC_CTYPE = 'Portuguese_Brazil.1252'
-    TABLESPACE = pg_default
-    CONNECTION LIMIT = -1
-    IS_TEMPLATE = False;
-
--- CRIANDO TABELA
+-- MODELOS DE TABELA
 
 CREATE TABLE aluno(
-	id SERIAL,
-	nome VARCHAR(255),
-	cpf char (11),
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(255) NOT NULL,
+	cpf CHAR(11),
 	observacao TEXT,
 	idade INTEGER,
 	dinheiro NUMERIC(10,2),
@@ -29,21 +13,39 @@ CREATE TABLE aluno(
 	hora_aula TIME,
 	matriculado_em TIMESTAMP
 );
+CREATE TABLE hora(
 
-CREATE TABLE curso (
-	id SERIAL PRIMARY KEY,
-	nome VARCHAR(255) NOT NULL
+	id_hora SERIAL PRIMARY KEY,
+	matricula VARCHAR(50) NOT NULL,
+	data_hora_inicial TIMESTAMP NOT NULL,
+	data_hora_final TIMESTAMP NOT NULL,
+	justificativa VARCHAR(200),
+	id_equipe INTEGER NOT NULL,
+	tipo_hora VARCHAR(30) NOT NULL,
+	id_cliente INTEGER,
+	status VARCHAR(50),
+	justificativa_status VARCHAR(200),
+
+	FOREIGN KEY (matricula)
+	REFERENCES usuario (matricula)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+
+	FOREIGN KEY (id_equipe)
+	REFERENCES equipe (id_equipe)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+
+	FOREIGN KEY (id_cliente)
+	REFERENCES cliente (id_cliente)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+
 );
 
-CREATE TABLE aluno (
-	id SERIAL PRIMARY KEY,
-	nome VARCHAR(255) NOT NULL
-);
-
--- INSERINDO INFORMAÇÃO NA TABELA
+-- INSERT's
 
 INSERT INTO curso (nome) VALUES ('JavaScript')
-
 INSERT INTO aluno (
 	nome,
 	cpf,
@@ -69,12 +71,16 @@ VALUES (
 	'2022-08-01'
 )
 
+INSERT INTO aluno (primeiro_nome, ultimo_nome, data_nascimento) VALUES ('Lucas',    'Souza',     '1996/05/15'),
+																	   ('João',     'Berto',     '1978/04/10'),
+																	   ('Malaquias','Silva',     '1990/08/18'),
+																	   ('Maria',    'Oliveira',  '1992/03/19'),
+																	   ('Fernando', 'Morai',     '1988/11/30'),
+																	   ('Jefferson','Aparecido', '1980/02/28');
+
 -- ALTERANDO VALORES DA TABELA
 
-UPDATE aluno SET
-	nome = 'Lucas Oliveira',
-	matriculado_em = '2023-03-25 20:12:00'
-WHERE id = 1;
+UPDATE aluno SET nome = 'Lucas Oliveira', matriculado_em = '2023-03-25 20:12:00' WHERE id = 1;
 
 -- DELETANDO TABELA OU LINHAS
 
@@ -103,30 +109,13 @@ SELECT * FROM aluno WHERE ativo = TRUE
 SELECT * FROM aluno WHERE nome LIKE 'L%' AND cpf IS NOT null
 SELECT * FROM aluno WHERE nome LIKE 'Lucas%' OR nome LIKE 'Joao' OR nome LIKE 'não existe'
 
--- TESTANDO RELACAO ENTRE TABELAS DE ALUNO E CURSO
-
-CREATE TABLE aluno_curso (
-	aluno_id INTEGER,
-	curso_id INTEGER,
-	PRIMARY KEY(aluno_id,curso_id),
-	
-	FOREIGN KEY (aluno_id)
-	 REFERENCES aluno (id),
-	
-	FOREIGN KEY (curso_id)
-	 REFERENCES curso (id)
-);
-
-SELECT * FROM curso
-
-INSERT INTO curso (nome) VALUES ('HTML');
-
-SELECT aluno.nome AS "Aluno",
-	   curso.nome AS "Curso" 
-	   FROM aluno
-	   JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
-	   JOIN curso       ON curso.id             = aluno_curso.curso_id
-
+SELECT 
+	aluno.nome AS "Aluno",
+	curso.nome AS "Curso" 
+FROM 
+	aluno
+JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
+JOIN curso       ON curso.id             = aluno_curso.curso_id
 
 SELECT * FROM aluno
 	     LEFT JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
@@ -143,59 +132,7 @@ SELECT * FROM aluno
 SELECT * FROM aluno
 		 CROSS JOIN curso
 
--- CONFIGURANDO A TABELA REALIZAR A EXCLUSAO DE UM ALUNO JUNTO COM O RELACIONAMENTO
-
-CREATE TABLE aluno_curso (
-	aluno_id INTEGER,
-	curso_id INTEGER,
-	PRIMARY KEY(aluno_id,curso_id),
-	
-	FOREIGN KEY (aluno_id)
-	REFERENCES aluno (id) 
-	ON DELETE CASCADE,
-	
-	FOREIGN KEY (curso_id)
-	REFERENCES curso (id)
-);
-
--- CONFIGURANDO A TABELA REALIZAR A EXCLUSAO E O UPDATE DE UM ALUNO JUNTO COM O RELACIONAMENTO
-
-CREATE TABLE aluno_curso (
-	aluno_id INTEGER,
-	curso_id INTEGER,
-	PRIMARY KEY(aluno_id,curso_id),
-	
-	FOREIGN KEY (aluno_id)
-	REFERENCES aluno (id) 
-	ON DELETE CASCADE
-	ON UPDATE CASCADE,
-	
-	FOREIGN KEY (curso_id)
-	REFERENCES curso (id)
-);
-
-UPDATE aluno SET id = 10 WHERE id = 2;
-	
--- ORDENANDO OS DADOS
-
-CREATE TABLE funcionarios (
-	
-	id SERIAL PRIMARY KEY,
-	matricula VARCHAR(10),
-	nome      VARCHAR(255),
-	sobrenome VARCHAR(255)
-	
-)
-
-INSERT INTO funcionarios (matricula, nome, sobrenome) VALUES ('001','LUCAS', 'OLIVEIRA');
-INSERT INTO funcionarios (matricula, nome, sobrenome) VALUES ('002','FELIPE', 'OLIVEIRA');
-INSERT INTO funcionarios (matricula, nome, sobrenome) VALUES ('003','MARIA', 'AUGUSTA');
-INSERT INTO funcionarios (matricula, nome, sobrenome) VALUES ('004','JOAO', 'SOUZA');
-INSERT INTO funcionarios (matricula, nome, sobrenome) VALUES ('005','FRANCISCO', 'CHICO');
-INSERT INTO funcionarios (matricula, nome, sobrenome) VALUES ('006','BERNADETE', 'AUGUSTA');
-INSERT INTO funcionarios (matricula, nome, sobrenome) VALUES ('007','LUCAS', 'AUGUSTO');
-
-SELECT * FROM funcionarios
+-- ORDER BY / DESC & ASC / DISTINCT / GROUP BY
 
 SELECT * FROM funcionarios ORDER BY nome
 SELECT * FROM funcionarios ORDER BY nome DESC
@@ -241,7 +178,3 @@ SELECT nome, COUNT(nome)
 			 FROM funcionarios 
 		     GROUP BY nome
 			 HAVING COUNT(nome) > 1;
-
-
-
-
