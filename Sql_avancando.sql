@@ -1,60 +1,3 @@
-
-CREATE TABLE aluno(
-	
-	id SERIAL PRIMARY KEY,
-	primeiro_nome VARCHAR(255) NOT NULL,
-	ultimo_nome VARCHAR(255) NOT NULL,
-	data_nascimento DATE NOT NULL
-);
-
-INSERT INTO aluno (primeiro_nome, ultimo_nome, data_nascimento) VALUES ('Lucas',    'Souza',     '1996/05/15'),
-																	   ('João',     'Berto',     '1978/04/10'),
-																	   ('Malaquias','Silva',     '1990/08/18'),
-																	   ('Maria',    'Oliveira',  '1992/03/19'),
-																	   ('Fernando', 'Morai',     '1988/11/30'),
-																	   ('Jefferson','Aparecido', '1980/02/28');
-SELECT * FROM aluno
-
-CREATE TABLE curso(
-
-	id SERIAL PRIMARY KEY,
-	nome VARCHAR(255) NOT NULL,
-	categoria INTEGER NOT NULL REFERENCES categoria(id)
-);
-
-INSERT INTO curso (nome, categoria) VALUES ('HTML',1);
-INSERT INTO curso (nome, categoria) VALUES ('Java',2);
-INSERT INTO curso (nome, categoria) VALUES ('JavaScript',2);
-INSERT INTO curso (nome, categoria) VALUES ('JavaScript',1);
-INSERT INTO curso (nome, categoria) VALUES ('Excel',3);
-SELECT * FROM curso
-
-CREATE TABLE categoria(
-
-	id SERIAL PRIMARY KEY,
-	nome VARCHAR(255) NOT NULL
-);
-
-INSERT INTO categoria (nome) VALUES ('FRONT-END');
-INSERT INTO categoria (nome) VALUES ('BACK-END');
-INSERT INTO categoria (nome) VALUES ('ADMINISTRATIVO');
-SELECT * FROM categoria
-
-CREATE TABLE aluno_curso(
-	
-	aluno_id INTEGER NOT NULL REFERENCES aluno(id),
-	curso_id INTEGER NOT NULL REFERENCES curso(id),
-	PRIMARY KEY(aluno_id, curso_id)
-);
-
-INSERT INTO aluno_curso (aluno_id, curso_id) VALUES (1,3);
-INSERT INTO aluno_curso (aluno_id, curso_id) VALUES (2,1);
-INSERT INTO aluno_curso (aluno_id, curso_id) VALUES (3,3);
-INSERT INTO aluno_curso (aluno_id, curso_id) VALUES (4,2);
-INSERT INTO aluno_curso (aluno_id, curso_id) VALUES (5,1);
-INSERT INTO aluno_curso (aluno_id, curso_id) VALUES (6,2);
-SELECT * FROM aluno_curso
-
 -- MANEIRAS DE GERAR RELATÓRIOS
 
 SELECT aluno.primeiro_nome,
@@ -116,6 +59,56 @@ SELECT TO_CHAR(data_nascimento, 'DD-MM-YYYY HH12') AS data FROM aluno;
 SELECT TO_CHAR(data_nascimento, 'DD-MM-YYYY HH24') AS data FROM aluno;
 SELECT TO_CHAR(data_nascimento, 'DD-MM-YYYY HH24 MI') AS data FROM aluno;
 SELECT TO_CHAR(data_nascimento, 'DD-MM-YYYY HH24 MI SS') AS data FROM aluno;
+
+-- OVER PARTITION BY (ACUMULADO)
+
+SELECT 
+	DISTINCT produto.descricao,
+	SUM(material_apontado.quilograma) AS kg,
+	CONCAT('R$ ',ROUND(AVG(tabela_preco.valor_prod) OVER(PARTITION BY tabela_preco.cod_prod),2)) AS vlr,
+	CONCAT('R$ ',ROUND(SUM(material_apontado.quilograma) * AVG(tabela_preco.valor_prod) OVER(PARTITION BY tabela_preco.cod_prod),2)) AS fat
+FROM
+	material_apontado
+LEFT JOIN produto ON produto.cod_prod = material_apontado.cod_prod
+LEFT JOIN tabela_preco ON tabela_preco.cod_prod = produto.cod_prod
+LEFT JOIN mes ON mes.mes = tabela_preco.mes 
+LEFT JOIN ano ON ano.ano = tabela_preco.ano
+WHERE material_apontado.id_equipamento = 1 AND mes.mes_valor >= 1 AND mes.mes_valor <= 5 AND ano.ano_valor = 2023 
+GROUP BY
+	produto.descricao,
+	tabela_preco.valor_prod,
+	tabela_preco.cod_prod
+
+-- FROM SELECT
+
+SELECT CONCAT('R$ ',SUM(apont.fat)) AS total FROM
+	(SELECT DISTINCT produto.descricao,
+		SUM(material_apontado.quilograma) AS kg,
+		ROUND(AVG(tabela_preco.valor_prod) OVER(PARTITION BY tabela_preco.cod_prod),2) AS vlr,
+		ROUND(SUM(material_apontado.quilograma) * AVG(tabela_preco.valor_prod) OVER(PARTITION BY tabela_preco.cod_prod),2) AS fat
+	FROM material_apontado
+	LEFT JOIN produto ON produto.cod_prod = material_apontado.cod_prod
+	LEFT JOIN tabela_preco ON tabela_preco.cod_prod = produto.cod_prod
+	LEFT JOIN mes ON mes.mes = tabela_preco.mes 
+	LEFT JOIN ano ON ano.ano = tabela_preco.ano
+	WHERE material_apontado.id_equipamento = 1 AND mes.mes_valor >= 1 AND mes.mes_valor <= 5 AND ano.ano_valor = 2023 
+	GROUP BY produto.descricao,tabela_preco.valor_prod,tabela_preco.cod_prod) AS apont;
+	
+-- WITH AS (CTE)
+
+WITH apont AS
+(SELECT DISTINCT produto.descricao,
+		SUM(material_apontado.quilograma) AS kg,
+		ROUND(AVG(tabela_preco.valor_prod) OVER(PARTITION BY tabela_preco.cod_prod),2) AS vlr,
+		ROUND(SUM(material_apontado.quilograma) * AVG(tabela_preco.valor_prod) OVER(PARTITION BY tabela_preco.cod_prod),2) AS fat
+	FROM material_apontado
+	LEFT JOIN produto ON produto.cod_prod = material_apontado.cod_prod
+	LEFT JOIN tabela_preco ON tabela_preco.cod_prod = produto.cod_prod
+	LEFT JOIN mes ON mes.mes = tabela_preco.mes 
+	LEFT JOIN ano ON ano.ano = tabela_preco.ano
+	WHERE material_apontado.id_equipamento = 4 AND mes.mes_valor >= 1 AND mes.mes_valor <= 5 AND ano.ano_valor = 2023 
+	GROUP BY produto.descricao,tabela_preco.valor_prod,tabela_preco.cod_prod)
+SELECT SUM(apont.fat) FROM apont
 
 -- VIEW
 
