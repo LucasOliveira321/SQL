@@ -1,4 +1,12 @@
 #  PostgreSQL
+<h1>application.properties</h1>
+<div>
+    <a>spring.datasource.url=jdbc:postgresql://localhost:5432/tabela</a>
+    <a>spring.datasource.username=postgres</a>
+    <a>spring.datasource.password=password</a>
+    <a>spring.mvc.hiddenmethod.filter.enabled=true</a>
+</div>
+
 <h4> Os dois arquivos possuem exemplos de comandos realizados no PostgreSQL que me ajudam nas consultas de novas Query's </h4>
 <h2> Conteudo_inicial.slq </h2>
 - CRIAR TABELAS<br/>
