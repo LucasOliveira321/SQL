@@ -3,10 +3,10 @@
     <a>spring.datasource.url=jdbc:mysql://localhost:3306/tabela</a>
     <a>spring.datasource.username=username</a>
     <a>spring.datasource.password=password</a>
+    <p>spring.mvc.hiddenmethod.filter.enabled=true</p>
     <a>spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect</a>
     <a>spring.jpa.show-sql=false</a>
     <a>spring.jpa.hibernate.ddl-auto=create</a>
-    <a>spring.mvc.hiddenmethod.filter.enabled=true</a>
 </div>
 
 <h1>Conjuntos de Comandos SQL</h1>
