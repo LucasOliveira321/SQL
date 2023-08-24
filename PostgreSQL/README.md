@@ -1,10 +1,13 @@
 #  PostgreSQL
 <h1>application.properties</h1>
 <div>
-    <a>spring.datasource.url=jdbc:postgresql://localhost:5432/tabela</a>
-    <a>spring.datasource.username=postgres</a>
-    <a>spring.datasource.password=password</a>
-    <a>spring.mvc.hiddenmethod.filter.enabled=true</a>
+    <p>spring.datasource.url=jdbc:postgresql://localhost:5432/tabela</p>
+    <p>spring.datasource.username=postgres</p>
+    <p>spring.datasource.password=password</p>
+    <p>spring.mvc.hiddenmethod.filter.enabled=true</p>
+    <p>spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect</p>
+    <p>spring.jpa.show-sql=true</p>
+    <p>spring.jpa.hibernate.ddl-auto=create</p>
 </div>
 
 <h4> Os dois arquivos possuem exemplos de comandos realizados no PostgreSQL que me ajudam nas consultas de novas Query's </h4>
