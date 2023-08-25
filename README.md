@@ -1,15 +1,43 @@
-<h1>application.properties</h1>
+<h1>Transação de BD (ACID)</h1>
+<ul>
+    <li>
+        <details>
+            <summary>A - Atomicidade</summary>
+            <p>Seria a garantia de que a transação será feita totalmente ou não será feita. Nesse caso, a transação não é feita “pela metade”. Se por ventura uma operação da transação falhar, consequentemente, toda a transação falhará.</p>
+        </details>
+    </li>
+    <li>
+        <details>
+            <summary>C - Consistência</summary>
+            <p>Seria a proteção da integridade dos dados. Ou seja, se um banco de dados fizer uma operação que não seja válida, o processo será impedido e retornará para o estado inicial do processo.</p>
+        </details>
+    </li>
+    <li>
+        <details>
+            <summary>I - Isolamento</summary>
+            <p>A capacidade de isolamento seria o fato de uma transação não “atrapalhar” a outra e ocorrer de forma isolada, garantindo que sejam feitas de forma individual.</p>
+        </details>
+    </li>
+    <li>
+        <details>
+            <summary>D - Durabilidade</summary>
+            <p>Seria a preservação dos dados após as operações terem sido realizadas. Ou seja, uma vez que uma transação for efetuada, ela permanecerá dessa forma, mesmo que ocorram problemas graves no sistema, sem precisar de retrabalho.</p>
+        </details>
+    </li>
+</ul>
+
+<h2>application.properties</h2>
 <div>
-    <a>spring.datasource.url=jdbc:mysql://localhost:3306/tabela</a>
-    <a>spring.datasource.username=username</a>
-    <a>spring.datasource.password=password</a>
+    <p>spring.datasource.url=jdbc:mysql://localhost:3306/tabela</p>
+    <p>spring.datasource.username=username</p>
+    <p>spring.datasource.password=password</p>
     <p>spring.mvc.hiddenmethod.filter.enabled=true</p>
-    <a>spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect</a>
-    <a>spring.jpa.show-sql=false</a>
-    <a>spring.jpa.hibernate.ddl-auto=create</a>
+    <p>spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect</p>
+    <p>spring.jpa.show-sql=false</p>
+    <p>spring.jpa.hibernate.ddl-auto=create</p>
 </div>
 
-<h1>Conjuntos de Comandos SQL</h1>
+<h2>Conjuntos de Comandos SQL</h2>
 <ul>
     <li>
         <details>
