@@ -105,4 +105,17 @@ select add_months(sysdate,10) from dual;
 select sysdate, next_day(sysdate, 'sexta') from dual;
 select sysdate, last_day(sysdate) from dual;
 select sysdate, trunc(sysdate, 'month') from dual;
+select extract(month from to_date('05/09/2023','dd/mm/yyyy')) from dual;
+
+--FUNÇOÕES MATEMÁTICAS
+
+select ceil(3.6) from dual;
+select floor(3.6) from dual;
+select power(10,4) from dual;
+select exp(2) from dual;
+select sqrt(64) from dual;
+select abs(-10) from dual;
+select mod(10,6) from dual;
+select to_char(1234.655, '9999.99') from dual;
+select NVL(NULL, 0) from dual;
 
