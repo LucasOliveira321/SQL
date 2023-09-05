@@ -1,0 +1,10 @@
+<h2>application.properties</h2>
+<div>
+    <p>spring.datasource.url=jdbc:mysql://localhost:3306/tabela</p>
+    <p>spring.datasource.username=username</p>
+    <p>spring.datasource.password=password</p>
+    <p>spring.mvc.hiddenmethod.filter.enabled=true</p>
+    <p>spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect</p>
+    <p>spring.jpa.show-sql=false</p>
+    <p>spring.jpa.hibernate.ddl-auto=create</p>
+</div>
