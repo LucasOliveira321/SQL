@@ -295,3 +295,95 @@ BEGIN
 END;
 
 SELECT C.RAZAO_SOCIAL, C.FATURAMENTO_PREVISTO, categoria_cliente(C.FATURAMENTO_PREVISTO) FROM CLIENTE C;
+
+
+-- CRIANDO PROCEDURE
+CREATE TABLE empregado (
+    id_empregado INT PRIMARY KEY,
+    id_departamento INT,
+    salario DECIMAL(10,2)
+);
+insert into empregado values(4, 4, 3050.00);
+
+CREATE OR REPLACE PROCEDURE muda_salario(
+    p_USUARIO empregado.id_empregado%TYPE,
+    p_DEPARTAMENTO empregado.id_empregado%TYPE,
+    p_PERCENTUAL NUMBER
+)
+IS
+    v_SALARIO_ATUAL empregado.salario%TYPE;
+BEGIN
+    SELECT e.salario INTO v_SALARIO_ATUAL FROM empregado e WHERE id_empregado = p_USUARIO AND id_departamento = p_DEPARTAMENTO;
+    v_SALARIO_ATUAL := v_SALARIO_ATUAL + (v_SALARIO_ATUAL * p_PERCENTUAL);
+    
+    UPDATE empregado e SET e.salario = v_SALARIO_ATUAL WHERE id_empregado = p_USUARIO AND id_departamento = p_DEPARTAMENTO;
+    dbms_output.put_line(v_SALARIO_ATUAL);
+END;
+/
+
+EXECUTE muda_salario(3,3,0.10);
+
+select * from empregado;
+
+
+-- CRIANDO FUNCTION
+CREATE TABLE departamento (
+    id_dep INT PRIMARY KEY,
+    nome_dep VARCHAR(255)
+);
+INSERT INTO departamento VALUES(1,'RH');
+INSERT INTO departamento VALUES(2,'PRODUCAO');
+INSERT INTO departamento VALUES(3,'GESTAO');
+INSERT INTO departamento VALUES(4,'LOGISTICA');
+
+
+CREATE TABLE usuarios (
+    id_usu INT PRIMARY KEY,
+    nome_usu VARCHAR(255),
+    departamento_id_usu INT,
+    FOREIGN KEY (departamento_id_usu) REFERENCES departamento(id_dep)
+);
+
+INSERT INTO usuarios VALUES(1, 'LUCAS', 4);
+INSERT INTO usuarios VALUES(2, 'JOSE', 1);
+INSERT INTO usuarios VALUES(3, 'FELIPE', 2);
+INSERT INTO usuarios VALUES(4, 'MARIA', 2);
+INSERT INTO usuarios VALUES(5, 'AUGUSTO', 3);
+INSERT INTO usuarios VALUES(6, 'FERNANDA', 2);
+
+SELECT * FROM usuarios;
+
+CREATE OR REPLACE FUNCTION count_users_by_department (
+    p_DEPARTAMENTO departamento.nome_dep%TYPE
+)
+RETURN INT
+IS
+    v_QTY INT;
+BEGIN
+    SELECT COUNT(u.nome_usu) INTO v_QTY
+    FROM usuarios u 
+    JOIN departamento d ON d.id_dep = u.departamento_id_usu
+    WHERE d.nome_dep = p_DEPARTAMENTO;
+    RETURN v_QTY;
+END;
+/
+
+SELECT count_users_by_department('PRODUCAO') FROM DUAL;
+
+-- CRIANDO PACKAGE
+CREATE OR REPLACE PACKAGE nome_do_package AS
+  FUNCTION count_users_by_department(department_id IN NUMBER) RETURN NUMBER;
+  PROCEDURE muda_salario(employee_id IN NUMBER, new_salary IN NUMBER);
+END nome_do_package;
+/
+
+-- CRIANDO TRIGGER
+CREATE OR REPLACE TRIGGER trg_employess_modify
+BEFORE INSERT ON hr.employees
+FOR EACH ROW
+BEGIN
+    IF :NEW.departments IS NULL THEN
+        :NEW.departments := 20;
+    END IF;
+END;
+/
