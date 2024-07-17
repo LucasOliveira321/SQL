@@ -1,7 +1,7 @@
 #  PostgreSQL
 <h1>application.properties</h1>
 <div>
-    <p>spring.datasource.url=jdbc:postgresql://localhost:5432/tabela</p>
+    <p>spring.datasource.url=jdbc:postgresql://localhost:5432/database</p>
     <p>spring.datasource.username=postgres</p>
     <p>spring.datasource.password=password</p>
     <p>spring.mvc.hiddenmethod.filter.enabled=true</p>
