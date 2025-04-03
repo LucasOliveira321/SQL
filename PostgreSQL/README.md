@@ -1,5 +1,5 @@
 #  PostgreSQL
-<h1>application.properties</h1>
+<h2>application.properties</h2>
 <div>
     <p>spring.datasource.url=jdbc:postgresql://localhost:5432/database</p>
     <p>spring.datasource.username=postgres</p>
@@ -9,6 +9,18 @@
     <p>spring.jpa.show-sql=true</p>
     <p>spring.jpa.hibernate.ddl-auto=create</p>
 </div>
+<h2>Comando DUMP</h2>
+<p>Comando para gerar arquivo dump do banco</p>
+<li>
+    export PGPASSWORD="sua_senha" && /opt/homebrew/opt/libpq/bin/pg_dump(local_do_arquivo .exe do dump) -U usuario -h host_da_aplicacao -p 5432 -F c -v -f /diretorio/para/salvar/o/arquivo_$(date +%Y-%m-%d).backup nome_do_seu_banco
+</li>
+<br/>
+
+<p>Comando para subir o arquivo dump do banco</p>
+<li>
+    export PGPASSWORD='sua_senha' && /opt/homebrew/opt/libpq/bin/pg_restore(local_do_arquivo .exe do pg_restore) -U usuario -h host_da_aplicacao -p 5432 -d nome_do_seu_banco -v /diretorio/do/seu/arquivo/dump/arquivo_2025-01-01.backup
+</li>
+
 
 <h4> Os dois arquivos possuem exemplos de comandos realizados no PostgreSQL que me ajudam nas consultas de novas Query's </h4>
 <h2> Conteudo_inicial.slq </h2>
